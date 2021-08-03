@@ -1,10 +1,14 @@
 # coding=utf-8
 """Utilities for tests for the python plugin."""
+import json
+
 from functools import partial
-from unittest import SkipTest, TestCase
+from unittest import SkipTest, TestCase, Mock, patch
 from tempfile import NamedTemporaryFile
 from urllib.parse import urljoin
 from lxml import html
+
+from google.cloud import pubsub_v1
 
 from pulp_smash import config, selectors
 from pulp_smash.utils import http_get
@@ -24,6 +28,7 @@ from pulp_python.tests.functional.constants import (
     PYTHON_URL,
     PYTHON_EGG_FILENAME,
     PYTHON_XS_PROJECT_SPECIFIER,
+    PYTHON_FIXTURES_FILENAMES,
 )
 
 from pulpcore.client.pulpcore import (
@@ -164,6 +169,19 @@ skip_if = partial(selectors.skip_if, exc=SkipTest)  # pylint:disable=invalid-nam
 :func:`pulp_smash.selectors.skip_if` is test runner agnostic. This function is
 identical, except that ``exc`` has been set to ``unittest.SkipTest``.
 """
+
+
+def mock_pubsub_publish(distro):
+    @patch(pubsub_v1.PublisherClient, "publish")
+    def mocked_publish(topic: str, data: bytes):
+        message = json.loads(data)
+
+        possibleFiles = [filename for filename in PYTHON_FIXTURES_FILENAMES]
+
+        assert topic != ""
+        assert message["action"] == "package_requested"
+        assert message["package"] in possibleFiles
+        assert message["source"] == distro.base_path
 
 
 def gen_artifact(url=PYTHON_URL):
