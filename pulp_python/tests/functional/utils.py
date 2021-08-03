@@ -1,7 +1,5 @@
 # coding=utf-8
 """Utilities for tests for the python plugin."""
-import json
-
 from functools import partial
 from unittest import SkipTest, TestCase
 from unittest.mock import patch
@@ -30,7 +28,6 @@ from pulp_python.tests.functional.constants import (
     PYTHON_URL,
     PYTHON_EGG_FILENAME,
     PYTHON_XS_PROJECT_SPECIFIER,
-    PYTHON_FIXTURES_FILENAMES,
 )
 
 from pulpcore.client.pulpcore import (
