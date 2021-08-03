@@ -75,6 +75,8 @@ class PipInstallContentTestCase(TestCaseUsingBindings, TestHelpersMixin):
         pub = self._create_publication(repo)
         distro = self._create_distribution_from_publication(pub)
 
+        self._mock_publish()
+
         self.addCleanup(delete_orphans, cfg)
         self.check_consume(distro.to_dict())
 
@@ -96,6 +98,8 @@ class PipInstallContentTestCase(TestCaseUsingBindings, TestHelpersMixin):
         repo = self._create_repo_and_sync_with_remote(remote)
         pub = self._create_publication(repo)
         distro = self._create_distribution_from_publication(pub)
+
+        self._mock_publish()
 
         self.check_consume(distro.to_dict())
 

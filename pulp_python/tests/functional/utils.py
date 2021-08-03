@@ -7,7 +7,7 @@ from tempfile import NamedTemporaryFile
 from urllib.parse import urljoin
 from lxml import html
 
-from google.cloud import pubsub_v1
+from google.cloud.pubsub_v1 import PublisherClient
 from google.cloud.pubsub_v1.publisher import futures
 
 from pulp_smash import config, selectors
@@ -337,10 +337,10 @@ class TestHelpersMixin:
         """
         return self._create_distribution(cleanup, publication=pub.pulp_href)
 
-    @patch(pubsub_v1.PublisherClient, "publish")
-    def mocked_publish(self):
+    def _mock_publish(self):
         """Mocks the publish function on the pubsub_v1 PublisherClient class"""
-        return futures.Future()
+        with patch.object(PublisherClient, "publish", return_value=futures.Future()):
+            pass
 
 
 def ensure_simple(simple_url, packages, sha_digests=None):
