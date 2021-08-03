@@ -2,13 +2,9 @@
 """Utilities for tests for the python plugin."""
 from functools import partial
 from unittest import SkipTest, TestCase
-from unittest.mock import patch
 from tempfile import NamedTemporaryFile
 from urllib.parse import urljoin
 from lxml import html
-
-from google.cloud.pubsub_v1 import PublisherClient
-from google.cloud.pubsub_v1.publisher import futures
 
 from pulp_smash import config, selectors
 from pulp_smash.utils import http_get
@@ -336,11 +332,6 @@ class TestHelpersMixin:
             The created `PythonDistribution`.
         """
         return self._create_distribution(cleanup, publication=pub.pulp_href)
-
-    def _mock_publish(self):
-        """Mocks the publish function on the pubsub_v1 PublisherClient class"""
-        with patch.object(PublisherClient, "publish", return_value=futures.Future()):
-            pass
 
 
 def ensure_simple(simple_url, packages, sha_digests=None):
