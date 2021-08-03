@@ -81,7 +81,11 @@ class PythonDistribution(Distribution):
             })
 
             response = publisher.publish(topic_path, message.encode("utf-8"))
-            log.info("package_requested message send to %s pub/sub, %s", topic_id, response.result())
+            log.info(
+                "package_requested message send to %s pub/sub, %s",
+                topic_id,
+                response.result()
+            )
         if name:
             package_content = PythonPackageContent.objects.filter(
                 pk__in=self.publication.repository_version.content,

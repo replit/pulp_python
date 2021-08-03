@@ -3,7 +3,7 @@
 import json
 
 from functools import partial
-from unittest import SkipTest, TestCase, Mock, patch
+from unittest import SkipTest, TestCase, patch
 from tempfile import NamedTemporaryFile
 from urllib.parse import urljoin
 from lxml import html
@@ -172,6 +172,7 @@ identical, except that ``exc`` has been set to ``unittest.SkipTest``.
 
 
 def mock_pubsub_publish(distro):
+    """Mocks the publish function on the pubsub_v1 PublisherClient class"""
     @patch(pubsub_v1.PublisherClient, "publish")
     def mocked_publish(topic: str, data: bytes):
         message = json.loads(data)
