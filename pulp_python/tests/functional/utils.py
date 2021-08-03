@@ -3,12 +3,14 @@
 import json
 
 from functools import partial
-from unittest import SkipTest, TestCase, patch
+from unittest import SkipTest, TestCase
+from unittest.mock import patch
 from tempfile import NamedTemporaryFile
 from urllib.parse import urljoin
 from lxml import html
 
 from google.cloud import pubsub_v1
+from google.cloud.pubsub_v1.publisher import futures
 
 from pulp_smash import config, selectors
 from pulp_smash.utils import http_get
@@ -169,20 +171,6 @@ skip_if = partial(selectors.skip_if, exc=SkipTest)  # pylint:disable=invalid-nam
 :func:`pulp_smash.selectors.skip_if` is test runner agnostic. This function is
 identical, except that ``exc`` has been set to ``unittest.SkipTest``.
 """
-
-
-def mock_pubsub_publish(distro):
-    """Mocks the publish function on the pubsub_v1 PublisherClient class"""
-    @patch(pubsub_v1.PublisherClient, "publish")
-    def mocked_publish(topic: str, data: bytes):
-        message = json.loads(data)
-
-        possibleFiles = [filename for filename in PYTHON_FIXTURES_FILENAMES]
-
-        assert topic != ""
-        assert message["action"] == "package_requested"
-        assert message["package"] in possibleFiles
-        assert message["source"] == distro.base_path
 
 
 def gen_artifact(url=PYTHON_URL):
@@ -351,6 +339,11 @@ class TestHelpersMixin:
             The created `PythonDistribution`.
         """
         return self._create_distribution(cleanup, publication=pub.pulp_href)
+
+    @patch(pubsub_v1.PublisherClient, "publish")
+    def mocked_publish(self):
+        """Mocks the publish function on the pubsub_v1 PublisherClient class"""
+        return futures.Future()
 
 
 def ensure_simple(simple_url, packages, sha_digests=None):
