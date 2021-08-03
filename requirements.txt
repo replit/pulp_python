@@ -3,4 +3,3 @@ pkginfo
 packaging
 bandersnatch==4.4.0
 google-cloud-pubsub
-
