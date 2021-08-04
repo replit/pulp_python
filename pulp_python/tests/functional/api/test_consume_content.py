@@ -28,7 +28,7 @@ from urllib.parse import urljoin, urlsplit
 from pulp_smash.utils import http_get
 
 
-@patch('google.cloud.pubsub_v1.PublisherClient', autospec=True)
+@patch('google.cloud.pubsub_v1.publisher.Client', autospec=True)
 class PipInstallContentTestCase(TestCaseUsingBindings, TestHelpersMixin):
     """
     Verify whether content served by Pulp can be consumed through pip install.
@@ -79,7 +79,8 @@ class PipInstallContentTestCase(TestCaseUsingBindings, TestHelpersMixin):
         pub = self._create_publication(repo)
         distro = self._create_distribution_from_publication(pub)
 
-        mock_client.publish.return_value = Future()
+        client_instance = mock_client.return_value
+        client_instance.publish.return_value = Future()
 
         self.addCleanup(delete_orphans, cfg)
         self.check_consume(distro.to_dict())
@@ -103,7 +104,8 @@ class PipInstallContentTestCase(TestCaseUsingBindings, TestHelpersMixin):
         pub = self._create_publication(repo)
         distro = self._create_distribution_from_publication(pub)
 
-        mock_client.publish.return_value = Future()
+        client_instance = mock_client.return_value
+        client_instance.publish.return_value = Future()
 
         self.check_consume(distro.to_dict())
 
