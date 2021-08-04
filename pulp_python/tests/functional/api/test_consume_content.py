@@ -28,8 +28,8 @@ from urllib.parse import urljoin, urlsplit
 from pulp_smash.utils import http_get
 
 
-@patch('google.cloud.pubsub_v1.publisher.Client.__init__', autospec=True)
-@patch('google.cloud.pubsub_v1.publisher.Client', autospec=True)
+@patch('google.cloud.pubsub_v1.PublisherClient.__init__')
+@patch('google.cloud.pubsub_v1.PublisherClient', autospec=True)
 class PipInstallContentTestCase(TestCaseUsingBindings, TestHelpersMixin):
     """
     Verify whether content served by Pulp can be consumed through pip install.
