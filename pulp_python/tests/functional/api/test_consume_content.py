@@ -96,7 +96,6 @@ class PipInstallContentTestCase(TestCaseUsingBindings, TestHelpersMixin):
         repo = self._create_repo_and_sync_with_remote(remote)
         pub = self._create_publication(repo)
         distro = self._create_distribution_from_publication(pub)
-
         self.check_consume(distro.to_dict())
 
     def check_consume(self, distribution):

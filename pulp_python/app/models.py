@@ -87,10 +87,9 @@ class PythonDistribution(Distribution):
                     topic_id,
                     response.result()
                 )
-            except Exception as e:
-                log.error(
-                    "Could not call package_requested message to pub/sub server, %s",
-                    e.__str__()
+            except Exception:
+                log.exception(
+                    "Could not call package_requested message to pub/sub server"
                 )
         if name:
             package_content = PythonPackageContent.objects.filter(
