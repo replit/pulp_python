@@ -80,7 +80,7 @@ class PipInstallContentTestCase(TestCaseUsingBindings, TestHelpersMixin):
         pub = self._create_publication(repo)
         distro = self._create_distribution_from_publication(pub)
 
-        mock_init_client.return_value = None
+        # mock_init_client.return_value = None
         client_instance = mock_client.return_value
         client_instance.publish.return_value = Future()
 
