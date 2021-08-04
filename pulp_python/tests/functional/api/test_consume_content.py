@@ -1,7 +1,5 @@
 # coding=utf-8
 """Tests that perform actions over content unit."""
-from concurrent.futures import Future
-
 from pulp_smash import cli
 from pulp_smash.pulp3.bindings import monitor_task
 from pulp_smash.pulp3.utils import delete_orphans, modify_repo
