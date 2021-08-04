@@ -5,7 +5,6 @@ from concurrent.futures import Future
 from pulp_smash import cli
 from pulp_smash.pulp3.bindings import monitor_task
 from pulp_smash.pulp3.utils import delete_orphans, modify_repo
-from unittest.mock import patch
 
 from pulp_python.tests.functional.constants import (
     PYTHON_FIXTURE_URL,
@@ -28,8 +27,6 @@ from urllib.parse import urljoin, urlsplit
 from pulp_smash.utils import http_get
 
 
-@patch('google.cloud.pubsub_v1.PublisherClient.__init__')
-@patch('google.cloud.pubsub_v1.PublisherClient', autospec=True)
 class PipInstallContentTestCase(TestCaseUsingBindings, TestHelpersMixin):
     """
     Verify whether content served by Pulp can be consumed through pip install.
@@ -61,7 +58,7 @@ class PipInstallContentTestCase(TestCaseUsingBindings, TestHelpersMixin):
                 "{} is already installed".format(pkg),
             )
 
-    def test_workflow_01(self, mock_init_client, mock_client):
+    def test_workflow_01(self):
         """
         Verify workflow 1
         """
@@ -80,14 +77,10 @@ class PipInstallContentTestCase(TestCaseUsingBindings, TestHelpersMixin):
         pub = self._create_publication(repo)
         distro = self._create_distribution_from_publication(pub)
 
-        # mock_init_client.return_value = None
-        client_instance = mock_client.return_value
-        client_instance.publish.return_value = Future()
-
         self.addCleanup(delete_orphans, cfg)
         self.check_consume(distro.to_dict())
 
-    def test_workflow_02(self, mock_init_client, mock_client):
+    def test_workflow_02(self):
         """
         Verify workflow 2
 
@@ -105,10 +98,6 @@ class PipInstallContentTestCase(TestCaseUsingBindings, TestHelpersMixin):
         repo = self._create_repo_and_sync_with_remote(remote)
         pub = self._create_publication(repo)
         distro = self._create_distribution_from_publication(pub)
-
-        mock_init_client.return_value = None
-        client_instance = mock_client.return_value
-        client_instance.publish.return_value = Future()
 
         self.check_consume(distro.to_dict())
 
