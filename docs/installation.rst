@@ -50,7 +50,7 @@ Make and Run Migrations
    pulpcore-manager migrate python
 
 (Optional) Configure the google pub/sub service
-------------------------------------
+-----------------------------------------------
 
 Create a service account in the google cloud console and make sure to give it the pubsub role.
 Once created, download the JSON key file and save it somewhere on disk. Type
