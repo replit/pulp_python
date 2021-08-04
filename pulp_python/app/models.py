@@ -70,7 +70,7 @@ class PythonDistribution(Distribution):
         elif path.match("pypi/*/json"):
             name = path.parts[1]
         # Ignore the google pub/sub link when running the test scripts (it breaks the docs scripts)
-        if (path.match("*.tar.gz") or path.match("*.whl")) and os.getenv("ENV") != "test":
+        if path.match("*.tar.gz") or path.match("*.whl"):
             try:
                 project_id = settings.GOOGLE_PUBSUB_PROJECT_ID
                 topic_id = settings.GOOGLE_PUBSUB_TOPIC_ID
