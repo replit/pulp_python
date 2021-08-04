@@ -1,6 +1,10 @@
+import json
 from logging import getLogger
 
+from google.cloud import pubsub_v1
+
 from aiohttp.web import json_response
+from dynaconf import settings
 from django.contrib.postgres.fields import ArrayField, JSONField
 from django.db import models
 
@@ -63,6 +67,30 @@ class PythonDistribution(Distribution):
             name = path.parts[1]
         elif path.match("pypi/*/json"):
             name = path.parts[1]
+        if path.match("*.tar.gz") or path.match("*.whl"):
+            try:
+                project_id = settings.GOOGLE_PUBSUB_PROJECT_ID
+                topic_id = settings.GOOGLE_PUBSUB_TOPIC_ID
+
+                publisher = pubsub_v1.PublisherClient()
+                topic_path = publisher.topic_path(project_id, topic_id)
+
+                message = json.dumps({
+                    "action": "package_requested",
+                    "package": str(path),
+                    "source": self.base_path,
+                })
+
+                response = publisher.publish(topic_path, message.encode("utf-8"))
+                log.info(
+                    "package_requested message send to %s pub/sub, %s",
+                    topic_id,
+                    response.result()
+                )
+            except Exception:
+                log.exception(
+                    "Could not call package_requested message to pub/sub server"
+                )
         if name:
             package_content = PythonPackageContent.objects.filter(
                 pk__in=self.publication.repository_version.content,

@@ -49,6 +49,24 @@ Make and Run Migrations
    pulpcore-manager makemigrations python
    pulpcore-manager migrate python
 
+(Optional) Configure the google pub/sub service
+-----------------------------------------------
+
+Create a service account in the google cloud console and make sure to give it the pubsub role.
+Once created, download the JSON key file and save it somewhere on disk. Type
+``sudo systemctl edit pulpcore-content`` in your shell to create a configuration file for the
+pulp-content service and copy this content into it.
+
+.. code-block:: bash
+
+    [Service]
+    Environment="GOOGLE_APPLICATION_CREDENTIALS=<path to the JSON key file>"
+
+Go back to the google cloud console and create a new topic for your application. Open the django
+configuration file (Should live under ``/etc/pulp/settings.py``) for pulp and add the values for
+``GOOGLE_PUBSUB_PROJECT_ID`` and ``GOOGLE_PUBSUB_TOPIC_ID``, which should be the label for the project
+in which you created your pub/sub topic and the topic label itself respectively.
+
 Run Services
 ------------
 
