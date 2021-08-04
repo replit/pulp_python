@@ -1,5 +1,7 @@
 FROM {{ ci_base | default("pulp/pulp-ci-centos:latest") }}
 
+ENV ENV=test
+
 # Add source directories to container
 {% for item in plugins %}
 {% if item.source.startswith("./") %}

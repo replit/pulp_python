@@ -1,5 +1,6 @@
 import json
 import os
+import sys
 from logging import getLogger
 
 from google.cloud import pubsub_v1
@@ -68,26 +69,32 @@ class PythonDistribution(Distribution):
             name = path.parts[1]
         elif path.match("pypi/*/json"):
             name = path.parts[1]
-        # Ignore the google pub/sub link when running the docs test scripts
-        if (path.match("*.tar.gz") or path.match("*.whl")) and os.getenv("TEST") != "docs":
-            project_id = settings.GOOGLE_PUBSUB_PROJECT_ID
-            topic_id = settings.GOOGLE_PUBSUB_TOPIC_ID
+        # Ignore the google pub/sub link when running the test scripts (it breaks the docs scripts)
+        if (path.match("*.tar.gz") or path.match("*.whl")) and os.getenv("ENV") != "test":
+            try:
+                project_id = settings.GOOGLE_PUBSUB_PROJECT_ID
+                topic_id = settings.GOOGLE_PUBSUB_TOPIC_ID
 
-            publisher = pubsub_v1.PublisherClient()
-            topic_path = publisher.topic_path(project_id, topic_id)
+                publisher = pubsub_v1.PublisherClient()
+                topic_path = publisher.topic_path(project_id, topic_id)
 
-            message = json.dumps({
-                "action": "package_requested",
-                "package": str(path),
-                "source": self.base_path,
-            })
+                message = json.dumps({
+                    "action": "package_requested",
+                    "package": str(path),
+                    "source": self.base_path,
+                })
 
-            response = publisher.publish(topic_path, message.encode("utf-8"))
-            log.info(
-                "package_requested message send to %s pub/sub, %s",
-                topic_id,
-                response.result()
-            )
+                response = publisher.publish(topic_path, message.encode("utf-8"))
+                log.info(
+                    "package_requested message send to %s pub/sub, %s",
+                    topic_id,
+                    response.result()
+                )
+            except Exception as e:
+                log.error(
+                    "Could not call package_requested message to pub/sub server, %s",
+                    e.__str__()
+                )
         if name:
             package_content = PythonPackageContent.objects.filter(
                 pk__in=self.publication.repository_version.content,
