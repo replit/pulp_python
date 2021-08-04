@@ -1,6 +1,4 @@
 import json
-import os
-import sys
 from logging import getLogger
 
 from google.cloud import pubsub_v1
