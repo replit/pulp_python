@@ -1,4 +1,5 @@
 import json
+import os
 from logging import getLogger
 
 from google.cloud import pubsub_v1
@@ -67,7 +68,8 @@ class PythonDistribution(Distribution):
             name = path.parts[1]
         elif path.match("pypi/*/json"):
             name = path.parts[1]
-        if path.match("*.tar.gz") or path.match("*.whl"):
+        # Ignore the google pub/sub link when running the docs test scripts
+        if (path.match("*.tar.gz") or path.match("*.whl")) and os.getenv("TEST") != "docs":
             project_id = settings.GOOGLE_PUBSUB_PROJECT_ID
             topic_id = settings.GOOGLE_PUBSUB_TOPIC_ID
 
