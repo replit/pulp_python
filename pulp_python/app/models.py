@@ -77,6 +77,7 @@ class PythonDistribution(Distribution):
 
                 message = json.dumps({
                     "action": "package_requested",
+                    "language": "python",
                     "package": str(path),
                     "source": self.base_path,
                 })
