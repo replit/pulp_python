@@ -76,7 +76,7 @@ jobs:
           - TEST: generate-bindings
 
     steps:
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v4.1.7
         with:
           name: pulp_python.tar
 
@@ -186,7 +186,7 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v4.1.7
         with:
           name: pulp_python.tar
 
@@ -220,7 +220,7 @@ jobs:
       - name: Push branch and tag to GitHub
         run: bash .github/workflows/scripts/push_branch_and_tag_to_github.sh ${{ github.event.inputs.release }}
       - name: Download built docs
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4.1.7
         with:
           name: docs.tar
 
@@ -231,7 +231,7 @@ jobs:
       - name: Deploy plugin to pypi
         run: bash .github/workflows/scripts/publish_plugin_pypi.sh ${{ github.event.inputs.release }}
       - name: Download Python client
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4.1.7
         with:
           name: python-client.tar
 
@@ -241,7 +241,7 @@ jobs:
       - name: Publish client to pypi
         run: bash .github/workflows/scripts/publish_client_pypi.sh
       - name: Download Ruby client
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4.1.7
         with:
           name: ruby-client.tar
 
