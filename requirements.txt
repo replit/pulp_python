@@ -3,3 +3,4 @@ pkginfo
 packaging
 bandersnatch==4.4.0
 google-cloud-pubsub
+django>=3.2.14 # not directly required, pinned by Snyk to avoid a vulnerability
